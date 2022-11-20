@@ -1,5 +1,4 @@
 import { prisma } from "@/config";
-import { Process } from "@/protocols";
 import { Payment } from "@prisma/client";
 
 async function getPaymentsRepository(ticketId: number): Promise<Payment> {

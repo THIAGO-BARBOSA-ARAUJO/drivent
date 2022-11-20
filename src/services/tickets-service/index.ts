@@ -5,7 +5,7 @@ import {
   validateEventRegistration,
 } from "@/repositories/tickets-repository";
 import enrollmentRepository from "@/repositories/enrollment-repository";
-import { Ticket, TicketType, TicketStatus } from "@prisma/client";
+import { TicketStatus } from "@prisma/client";
 import { notFoundError } from "@/errors";
 
 async function serviceTicketsTypeGet() {
