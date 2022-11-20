@@ -30,4 +30,25 @@ async function validateEventRegistration(userid: number): Promise<Enrollment> {
   });
 }
 
-export { getAllTicketsType, PostTicket, getTickets, validateEventRegistration };
+async function getTicketsByTicketId(id: number) {
+  return prisma.ticket.findFirst({
+    where: {
+      id,
+    },
+    include: {
+      Enrollment: true,
+      TicketType: true,
+    },
+  });
+}
+
+async function updateTicket(status: Partial<Omit<Ticket, "id">>, id: number) {
+  return prisma.ticket.update({
+    where: {
+      id
+    },
+    data: status
+  });
+}
+
+export { getAllTicketsType, PostTicket, getTickets, validateEventRegistration, getTicketsByTicketId, updateTicket };
