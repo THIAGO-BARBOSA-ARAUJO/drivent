@@ -1,53 +1,55 @@
-import { notFoundError } from "@/errors";
-import ticketRepository from "@/repositories/ticket-repository";
+import {
+  getAllTicketsType,
+  PostTicket,
+  getTickets,
+  validateEventRegistration,
+} from "@/repositories/tickets-repository";
 import enrollmentRepository from "@/repositories/enrollment-repository";
-import { TicketStatus } from "@prisma/client";
+import { Ticket, TicketType, TicketStatus } from "@prisma/client";
+import { notFoundError } from "@/errors";
 
-async function getTicketTypes() {
-  const ticketTypes = await ticketRepository.findTicketTypes();
-
-  if (!ticketTypes) {
-    throw notFoundError();
-  }
-  return ticketTypes;
+async function serviceTicketsTypeGet() {
+  return await getAllTicketsType();
 }
 
-async function getTicketByUserId(userId: number) {
-  const enrollment = await enrollmentRepository.findWithAddressByUserId(userId);
-  if (!enrollment) {
-    throw notFoundError();
-  }
-  const ticket = await ticketRepository.findTicketByEnrollmentId(enrollment.id);
-  if (!ticket) {
+async function serviceTicketPost(ticketTypeId: number, userId: number) {
+  const valid = await validateEventRegistration(userId);
+
+  if (!valid) {
     throw notFoundError();
   }
 
-  return ticket;
-}
+  const enrollment = await enrollmentRepository.findEnrollment(userId);
 
-async function createTicket(userId: number, ticketTypeId: number) {
-  const enrollment = await enrollmentRepository.findWithAddressByUserId(userId);
-  if (!enrollment) {
-    throw notFoundError();
-  }
-
-  const ticketData = {
-    ticketTypeId,
+  const tickt = {
+    ticketTypeId: ticketTypeId,
     enrollmentId: enrollment.id,
-    status: TicketStatus.RESERVED
+    status: TicketStatus.RESERVED,
   };
 
-  await ticketRepository.createTicket(ticketData);
+  await PostTicket(tickt);
 
-  const ticket = await ticketRepository.findTicketByEnrollmentId(enrollment.id);
+  const validenrollment = await validateEventRegistration(userId);
 
-  return ticket;
+  if (!validenrollment) throw notFoundError();
+
+  const tickets = await getTickets(validenrollment.id);
+
+  if (!tickets) throw notFoundError();
+
+  return tickets;
 }
 
-const ticketService = {
-  getTicketTypes,
-  getTicketByUserId,
-  createTicket
-};
+async function serviceTicketsget(userId: number) {
+  const validenrollment = await validateEventRegistration(userId);
 
-export default ticketService;
+  if (!validenrollment) throw notFoundError();
+
+  const tickets = await getTickets(validenrollment.id);
+
+  if (!tickets) throw notFoundError();
+
+  return tickets;
+}
+
+export { serviceTicketsTypeGet, serviceTicketPost, serviceTicketsget };
