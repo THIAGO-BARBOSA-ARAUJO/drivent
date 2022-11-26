@@ -12,7 +12,7 @@ async function findWithAddressByUserId(userId: number) {
 
 async function findById(enrollmentId: number) {
   return prisma.enrollment.findFirst({
-    where: { id: enrollmentId }
+    where: { id: enrollmentId },
   });
 }
 
@@ -30,7 +30,7 @@ async function upsert(
   });
 }
 
-async function findEnrollment(userId: number) {
+async function findEnrollment(userId: number): Promise<Enrollment> {
   return prisma.enrollment.findFirst({
     where: { userId },
   });

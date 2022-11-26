@@ -11,7 +11,7 @@ import { cleanDb, generateValidToken } from "../helpers";
 
 beforeAll(async () => {
   await init();
-  await cleanDb();
+  //await cleanDb();
 });
 
 const server = supertest(app);
