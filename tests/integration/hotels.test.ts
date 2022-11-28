@@ -216,12 +216,12 @@ describe("GET /hotels:hotelId", () => {
         updatedAt: hotel.updatedAt.toISOString(),
         Rooms: expect.arrayContaining([
           expect.objectContaining({
-            id: room.id,
-            hotelId: room.hotelId,
-            name: room.name,
-            capacity: room.capacity,
-            createdAt: room.createdAt,
-            updatedAt: room.updatedAt,
+            id: expect.any(Number),
+            hotelId: expect.any(Number),
+            name: expect.any(String),
+            capacity: expect.any(Number),
+            createdAt: expect.any(String),
+            updatedAt: expect.any(String),
           }),
         ]),
       }),
