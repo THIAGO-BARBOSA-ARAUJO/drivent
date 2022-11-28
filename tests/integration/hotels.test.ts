@@ -52,7 +52,7 @@ describe("GET /hotels", () => {
     expect(response.status).toBe(httpStatus.UNAUTHORIZED);
   });
 
-  it("should respond with status 403 if user has no enrollment yet", async () => {
+  it("should respond with status 404 if user has no enrollment yet", async () => {
     const user = await createUser();
     const token = await generateValidToken(user);
 
