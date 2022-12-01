@@ -24,4 +24,20 @@ async function getBedroomsRepository(id: number): Promise<Hotel[]> {
   });
 }
 
-export { getHotelsRepository, getBedroomsRepository, getHotelsById };
+async function getRoomsRepository(id: number) {
+  return prisma.room.findFirst({
+    where: {
+      id
+    },
+    include: {
+      Booking: true,
+      _count: {
+        select: {
+          Booking: true
+        }
+      }
+    } 
+  });
+}
+
+export { getHotelsRepository, getBedroomsRepository, getHotelsById, getRoomsRepository };
