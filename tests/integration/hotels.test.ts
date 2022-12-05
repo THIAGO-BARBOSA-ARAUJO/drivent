@@ -11,6 +11,7 @@ import {
   createNotValidTicktType,
   createTycktTypeValid,
   createTicket,
+  createdRoom,
 } from "../factories";
 import { cleanDb, generateValidToken } from "../helpers";
 import { connectDb } from "@/config";
@@ -107,9 +108,6 @@ describe("GET /hotels", () => {
           image: expect.any(String),
           createdAt: expect.any(String),
           updatedAt: expect.any(String),
-          Room: expect.objectContaining({
-            
-          })
         }),
       ]),
     );
@@ -199,7 +197,7 @@ describe("GET /hotels:hotelId", () => {
     const ticketType = await createTycktTypeValid();
     await createTicket(enrollment.id, ticketType.id, TicketStatus.PAID);
     const hotel = await createHotel();
-    const room = await createBadroom(hotel.id);
+    const room = await createdRoom(hotel.id);
 
     const response = await api.get(`/hotels/${hotel.id}`).set("Authorization", `Bearer ${token}`);
 

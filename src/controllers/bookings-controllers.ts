@@ -27,14 +27,8 @@ export async function postBookings(req: AuthenticatedRequest, res: Response) {
     const bookingId = await bookingsService.postBookingService(userId, roomId);
     return res.status(httpStatus.OK).send({ bookingId: bookingId.id });
   } catch (error) {
-    if (error.name === "UnauthorizedError") {
-      return res.sendStatus(httpStatus.UNAUTHORIZED);
-    }
     if (error.name === "NotFoundError") {
       return res.sendStatus(httpStatus.NOT_FOUND);
-    }
-    if (error.name === "PaymentRequiredError") {
-      return res.sendStatus(httpStatus.PAYMENT_REQUIRED);
     }
     if (error.name === "ForbiddenError") {
       return res.sendStatus(httpStatus.FORBIDDEN);
@@ -51,14 +45,8 @@ export async function updatetBooking(req: AuthenticatedRequest, res: Response) {
     const booking = await bookingsService.updatetBookingService(userId, roomId, bookingId);
     return res.status(httpStatus.OK).send({ bookingId: booking.id });
   } catch (error) {
-    if (error.name === "UnauthorizedError") {
-      return res.sendStatus(httpStatus.UNAUTHORIZED);
-    }
     if (error.name === "NotFoundError") {
       return res.sendStatus(httpStatus.NOT_FOUND);
-    }
-    if (error.name === "PaymentRequiredError") {
-      return res.sendStatus(httpStatus.PAYMENT_REQUIRED);
     }
     if (error.name === "ForbiddenError") {
       return res.sendStatus(httpStatus.FORBIDDEN);

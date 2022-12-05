@@ -16,3 +16,11 @@ export async function bookingCreated(user?: User, Room?: Room) {
     },
   });
 }
+
+export async function getBookingByBookingId(id: number) {
+  return prisma.booking.findFirst({
+    where: {
+      id,
+    },
+  });
+}

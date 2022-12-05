@@ -16,6 +16,7 @@ import {
   createTicket,
   createBadroomCapacityFull,
   bookingCreated,
+  getBookingByBookingId,
 } from "../factories";
 import { cleanDb, generateValidToken } from "../helpers";
 import { connectDb } from "@/config";
@@ -24,6 +25,7 @@ import { strict } from "assert";
 import exp from "constants";
 import { response } from "express";
 import { getRoomsRepository } from "@/repositories/hotels-repository";
+import { getBookings } from "@/controllers/bookings-controllers";
 
 beforeAll(async () => {
   connectDb();
@@ -239,6 +241,25 @@ describe("Post /booking", () => {
         bookingId: result.body.bookingId,
       });
     });
+
+    it("should insert a new booking in the database", async () => {
+      const user = await createUser();
+      const token = await generateValidToken(user);
+      const enrollment = await createEnrollmentWithAddress(user);
+      const ticketType = await createTycktTypeValid();
+      await createTicket(enrollment.id, ticketType.id, TicketStatus.PAID);
+      const hotel = await createHotel();
+      const room = await createBadroom(hotel);
+
+      const beforeCount = await prisma.booking.count();
+
+      await api.post("/booking").set("Authorization", `Bearer ${token}`).send({ roomId: room.id });
+
+      const afterCount = await prisma.booking.count();
+
+      expect(beforeCount).toEqual(0);
+      expect(afterCount).toEqual(1);
+    });
   });
 });
 
@@ -374,7 +395,7 @@ describe("PUT /booking/:bookingId", () => {
       const result = await api.put(`/booking/${booking.id}`).set("Authorization", `Bearer ${token}`).send({
         roomId: 5,
       });
-      expect(result.status).toBe(httpStatus.FORBIDDEN);
+      expect(result.status).toBe(httpStatus.NOT_FOUND);
     });
 
     it("should respond with status 403 if rooms have no vacancies", async () => {
@@ -438,6 +459,27 @@ describe("PUT /booking/:bookingId", () => {
       expect(result.body).toEqual({
         bookingId: result.body.bookingId,
       });
+    });
+
+    it("should update user booking in the database", async () => {
+      const user = await createUser();
+      const token = await generateValidToken(user);
+      const enrollment = await createEnrollmentWithAddress(user);
+      const ticketType = await createTycktTypeValid();
+      await createTicket(enrollment.id, ticketType.id, TicketStatus.PAID);
+      const hotel = await createHotel();
+      const room = await createBadroom(hotel);
+      const room2 = await createBadroom(hotel);
+      const booking = await bookingCreated(user, room);
+
+      await api.put(`/booking/${booking.id}`).set("Authorization", `Bearer ${token}`).send({
+        roomId: room2.id,
+      });
+
+      const bookingUpdate = await getBookingByBookingId(booking.id);
+
+      expect(booking.roomId).toEqual(room.id);
+      expect(bookingUpdate.roomId).toEqual(room2.id);
     });
   });
 });

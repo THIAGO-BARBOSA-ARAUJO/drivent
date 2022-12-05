@@ -27,6 +27,16 @@ async function createBadroom(hotel?: Hotel) {
   });
 }
 
+async function createdRoom(hotelId: number) {
+  return prisma.room.create({
+    data: {
+      name: "quato casal",
+      capacity: 2,
+      hotelId: hotelId,
+    },
+  });
+}
+
 async function createBadroomCapacityFull() {
   const user = await createUser();
   const hotel = await createHotel();
@@ -58,4 +68,11 @@ async function createNotValidTicktType() {
   });
 }
 
-export { createHotel, createBadroom, createNotValidTicktType, createTycktTypeValid, createBadroomCapacityFull };
+export {
+  createHotel,
+  createBadroom,
+  createNotValidTicktType,
+  createTycktTypeValid,
+  createBadroomCapacityFull,
+  createdRoom,
+};

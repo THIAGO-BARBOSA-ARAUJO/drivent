@@ -66,7 +66,7 @@ async function updatetBookingService(userId: number, roomId: number, bookingId: 
 
   const room = await getRoomsRepository(roomId);//
 
-  if (!room) throw ForbiddenError();//
+  if (!room) throw notFoundError();//
 
   if (room._count.Booking >= room.capacity) throw ForbiddenError();
 
