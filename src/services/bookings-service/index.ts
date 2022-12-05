@@ -29,6 +29,8 @@ async function postBookingService(userId: number, roomId: number) {
 
   if (!roomId) throw ForbiddenError();
 
+  if (roomId < 1) throw ForbiddenError();
+  
   const rooms = await getRoomsRepository(roomId);
   if (!rooms) throw notFoundError();
 
@@ -40,33 +42,35 @@ async function postBookingService(userId: number, roomId: number) {
 
 async function updatetBookingService(userId: number, roomId: number, bookingId: number) {
   if(!roomId) throw notFoundError();
+  
+  if(roomId <= 0) throw ForbiddenError();
 
-  const enrollmet = await enrollmentRepository.findEnrollment(userId);
+  const enrollmet = await enrollmentRepository.findEnrollment(userId); //
 
-  if (!enrollmet) throw ForbiddenError();
+  if (!enrollmet) throw ForbiddenError(); //
 
-  const ticketsAndTicktType = await getTickets(enrollmet.id);
+  const ticketsAndTicktType = await getTickets(enrollmet.id); //
 
-  if (!ticketsAndTicktType) throw ForbiddenError();
+  if (!ticketsAndTicktType) throw ForbiddenError(); //
 
-  if (ticketsAndTicktType.status !== "PAID") throw ForbiddenError();
+  if (ticketsAndTicktType.status !== "PAID") throw ForbiddenError(); //
 
   if (ticketsAndTicktType.TicketType.isRemote !== false || ticketsAndTicktType.TicketType.includesHotel !== true)
-    throw ForbiddenError();
+    throw ForbiddenError(); //
 
-  const booking = await bookingsRepository.getBookingByIdRepository(bookingId);
+  const booking = await bookingsRepository.getBookingByIdRepository(bookingId); //
 
-  if (!booking) throw notFoundError();
+  if (!booking) throw ForbiddenError();//
 
-  if(booking.userId !== userId) throw ForbiddenError();
+  if(booking.userId !== userId) throw ForbiddenError();//
 
-  const room = await getRoomsRepository(roomId);
+  const room = await getRoomsRepository(roomId);//
 
-  if (!room) throw notFoundError();
+  if (!room) throw ForbiddenError();//
 
   if (room._count.Booking >= room.capacity) throw ForbiddenError();
 
-  return bookingsRepository.updateBookingRepository(bookingId, roomId, userId);
+  return bookingsRepository.updateBookingRepository(bookingId, roomId, userId);//
 }
 
 export type CreateRoomIdParams = Pick<Booking, "roomId">;

@@ -1,8 +1,5 @@
-import app, { init } from "@/app";
-import { prisma } from "@/config";
-import faker from "@faker-js/faker";
+import app from "@/app";
 import { TicketStatus } from "@prisma/client";
-import { Server } from "http";
 import httpStatus from "http-status";
 import * as jwt from "jsonwebtoken";
 import supertest from "supertest";
@@ -17,9 +14,6 @@ import {
 } from "../factories";
 import { cleanDb, generateValidToken } from "../helpers";
 import { connectDb } from "@/config";
-import { date, number, string } from "joi";
-import { strict } from "assert";
-import exp from "constants";
 
 beforeAll(async () => {
   connectDb();
@@ -113,6 +107,9 @@ describe("GET /hotels", () => {
           image: expect.any(String),
           createdAt: expect.any(String),
           updatedAt: expect.any(String),
+          Room: expect.objectContaining({
+            
+          })
         }),
       ]),
     );

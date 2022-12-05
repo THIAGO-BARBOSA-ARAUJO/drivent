@@ -1,7 +1,7 @@
 import { prisma } from "@/config";
-import { Booking } from "@prisma/client";
+import { Booking, Room } from "@prisma/client";
 
-async function getBookingRepository(userId: number): Promise<Booking> {
+async function getBookingRepository(userId: number) {
   return prisma.booking.findFirst({
     where: { userId },
     include: {

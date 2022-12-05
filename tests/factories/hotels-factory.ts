@@ -1,6 +1,9 @@
 import faker from "@faker-js/faker";
 import { prisma } from "@/config";
 import { Hotel } from "@prisma/client";
+import { createUser, createEnrollmentWithAddress, createTicket, bookingCreated } from "../factories";
+
+import { generateValidToken } from "../helpers";
 
 async function createHotel() {
   return prisma.hotel.create({
@@ -12,14 +15,25 @@ async function createHotel() {
   });
 }
 
-async function createBadroom(id: number) {
+async function createBadroom(hotel?: Hotel) {
+  const Hotel = hotel || (await createHotel());
+
   return prisma.room.create({
     data: {
       name: "quato casal",
       capacity: 2,
-      hotelId: id,
+      hotelId: Hotel.id,
     },
   });
+}
+
+async function createBadroomCapacityFull() {
+  const user = await createUser();
+  const hotel = await createHotel();
+  const room = await createBadroom(hotel);
+  await bookingCreated(user, room);
+  await bookingCreated(user, room);
+  return room;
 }
 
 async function createTycktTypeValid() {
@@ -44,4 +58,4 @@ async function createNotValidTicktType() {
   });
 }
 
-export { createHotel, createBadroom, createNotValidTicktType, createTycktTypeValid };
+export { createHotel, createBadroom, createNotValidTicktType, createTycktTypeValid, createBadroomCapacityFull };
