@@ -39,12 +39,12 @@ const api = supertest(app);
 
 describe("GET /booking", () => {
   it("should respond with status 401 if no token is given", async () => {
-    const response = await api.get("/hotels");
+    const response = await api.get("/booking");
     expect(response.status).toBe(httpStatus.UNAUTHORIZED);
   });
 
   it("should respond with status 401 if given token is not valid", async () => {
-    const response = await api.get("/hotels").set("Authorization", "Bearer XXXX");
+    const response = await api.get("/booking").set("Authorization", "Bearer XXXX");
 
     expect(response.status).toBe(httpStatus.UNAUTHORIZED);
   });
@@ -53,7 +53,7 @@ describe("GET /booking", () => {
     const userWithoutSession = await createUser();
     const token = jwt.sign({ userId: userWithoutSession.id }, process.env.JWT_SECRET);
 
-    const response = await api.get("/hotels").set("Authorization", `Bearer ${token}`);
+    const response = await api.get("/booking").set("Authorization", `Bearer ${token}`);
 
     expect(response.status).toBe(httpStatus.UNAUTHORIZED);
   });
